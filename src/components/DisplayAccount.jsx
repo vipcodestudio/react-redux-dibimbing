@@ -3,17 +3,28 @@ import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 import axios from 'axios';
 import { fetchCatData, setData } from '../redux/slices/catSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 const DisplayAccount = () => {
-  const account = useSelector((state) => state.account);
+  // const account = useSelector((state) => state.account);
   const cat = useSelector((state) => state.cat);
-  console.log(cat);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(fetchCatData());
-  }, []);
+  // useEffect(() => {
+  //   dispatch(fetchCatData());
+  // }, []);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['catData'],
+    queryFn: async () => {
+      const res = await axios(
+        'https://api.thecatapi.com/v1/images/search?limit=10',
+      );
+      const data = await res.data;
+      return data;
+    },
+  });
 
   return (
     <div>
@@ -22,7 +33,7 @@ const DisplayAccount = () => {
       <Deposit />
       <Withdraw /> */}
 
-      {cat.isLoading && (
+      {isLoading && (
         <div style={{ display: 'flex', gap: '10px' }}>
           <div
             style={{ width: '200px', height: '200px', backgroundColor: 'grey' }}
@@ -43,14 +54,16 @@ const DisplayAccount = () => {
           gridTemplateColumns: 'repeat(3, 1fr)',
         }}
       >
-        {cat.data.map((item) => (
+        {data?.map((item) => (
           <div key={item.id} style={{ width: '200px', height: '200px' }}>
             <img src={item.url} style={{ width: '100%', height: '100%' }} />
           </div>
         ))}
       </div>
 
-      {cat.error !== '' && <p>Data tidak dapat di load</p>}
+      {error && <p>Data tidak dapat di load</p>}
+
+      <button onClick={refetch}>Refresh</button>
     </div>
   );
 };

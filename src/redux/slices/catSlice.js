@@ -24,6 +24,7 @@ const catSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCatData.pending, (state) => {
       state.isLoading = true;
+      state.error = '';
     });
     builder.addCase(fetchCatData.fulfilled, (state, action) => {
       state.isLoading = false;
