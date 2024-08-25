@@ -2,34 +2,55 @@ import { useDispatch, useSelector } from 'react-redux';
 import Deposit from './Deposit';
 import Withdraw from './Withdraw';
 import axios from 'axios';
-import { setData } from '../redux/slices/catSlice';
+import { fetchCatData, setData } from '../redux/slices/catSlice';
 import { useEffect } from 'react';
 
 const DisplayAccount = () => {
   const account = useSelector((state) => state.account);
   const cat = useSelector((state) => state.cat);
+  console.log(cat);
   const dispatch = useDispatch();
 
-  const fetchData = async () => {
-    const res = await axios(
-      'https://api.thecatapi.com/v1/images/search?limit=10',
-    );
-    const data = res.data;
-    dispatch(setData(data));
-  };
-
   useEffect(() => {
-    fetchData();
+    dispatch(fetchCatData());
   }, []);
-
-  console.log(cat);
 
   return (
     <div>
-      <h1>Tabungan</h1>
+      {/* <h1>Tabungan</h1>
       <p>Saldo: {account.tabungan}</p>
       <Deposit />
-      <Withdraw />
+      <Withdraw /> */}
+
+      {cat.isLoading && (
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <div
+            style={{ width: '200px', height: '200px', backgroundColor: 'grey' }}
+          ></div>
+          <div
+            style={{ width: '200px', height: '200px', backgroundColor: 'grey' }}
+          ></div>
+          <div
+            style={{ width: '200px', height: '200px', backgroundColor: 'grey' }}
+          ></div>
+        </div>
+      )}
+
+      <div
+        style={{
+          display: 'grid',
+          gap: '10px',
+          gridTemplateColumns: 'repeat(3, 1fr)',
+        }}
+      >
+        {cat.data.map((item) => (
+          <div key={item.id} style={{ width: '200px', height: '200px' }}>
+            <img src={item.url} style={{ width: '100%', height: '100%' }} />
+          </div>
+        ))}
+      </div>
+
+      {cat.error !== '' && <p>Data tidak dapat di load</p>}
     </div>
   );
 };
