@@ -1,14 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
-import Deposit from './Deposit';
-import Withdraw from './Withdraw';
+// import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { fetchCatData, setData } from '../redux/slices/catSlice';
-import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 const DisplayAccount = () => {
   // const account = useSelector((state) => state.account);
-  const cat = useSelector((state) => state.cat);
+  // const cat = useSelector((state) => state.cat);
   // const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -19,7 +15,7 @@ const DisplayAccount = () => {
     queryKey: ['catData'],
     queryFn: async () => {
       const res = await axios(
-        'https://api.thecatapi.com/v1/images/search?limit=10',
+        'https://api.thecatapi.com/v1/images/searc?limit=10',
       );
       const data = await res.data;
       return data;
